@@ -1,0 +1,20 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install GCC
+      run: sudo apt-get install build-essential
+
+    - name: Compile the tests
+      run: gcc -o vec_tests vec.h vec_tests.c
+
+    - name: Run the tests
+      run: ./vec_tests

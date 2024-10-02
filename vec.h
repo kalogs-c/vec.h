@@ -4,21 +4,21 @@
 #ifndef C_VEC
 #define C_VEC
 
-#define vec(T) (T*)vec_start(sizeof(T))
 #define DEFAULT_CAPACITY 5
+#define vec(T) (T*)vec_start(sizeof(T), DEFAULT_CAPACITY)
 
 typedef struct {
     size_t capacity;
     size_t length;
 } vec_metadata_t;
 
-void* vec_start(size_t item_size) {
+void* vec_start(size_t item_size, size_t initial_capacity) {
     void* ptr = 0;
-    size_t size = item_size * DEFAULT_CAPACITY + sizeof(vec_metadata_t);
+    size_t size = item_size * initial_capacity + sizeof(vec_metadata_t);
     vec_metadata_t* meta = (vec_metadata_t*)malloc(size);
 
     if (meta) {
-        meta->capacity = DEFAULT_CAPACITY;
+        meta->capacity = initial_capacity;
         meta->length = 0;
 
         ptr = meta + 1;
@@ -31,9 +31,13 @@ void* vec_start(size_t item_size) {
 #define vec_length(v) (vec_meta(v)->length)
 #define vec_capacity(v) (vec_meta(v)->capacity)
 
+void vec_destroy(void* v) {
+    vec_metadata_t* meta = vec_meta(v);
+    return free(meta);
+}
 void* vec_ensure_capacity(void* v, size_t items_count, size_t item_size) {
     vec_metadata_t* meta = vec_meta(v);
-    size_t capacity_needed = meta->length + items_count;
+    size_t capacity_needed = meta->length + items_count * item_size;
 
     if (meta->capacity > capacity_needed) {
         meta = meta + 1;
