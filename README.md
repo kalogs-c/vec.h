@@ -29,5 +29,5 @@ size_t cap = vec_capacity(my_vec);
 
 ### Free Memory
 ```c
-vec_destroy(my_vec)
+vec_destroy(my_vec);
 ```
