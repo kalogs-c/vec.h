@@ -20,32 +20,32 @@ int failed = 0;
 
 // Test for vector creation and initial length and capacity
 TEST(test_vector_creation) {
-    int* vec = vec(int);
-    ASSERT(vec_length(vec) == 0);
-    ASSERT(vec_capacity(vec) == DEFAULT_CAPACITY);
-    free(vec_meta(vec));
+    int* v = vec(int);
+    ASSERT(vec_length(v) == 0);
+    ASSERT(vec_capacity(v) == DEFAULT_CAPACITY);
+    vec_destroy(v);
 }
 
 // Test for pushing elements and checking length
 TEST(test_vector_push) {
-    int* vec = vec(int);
-    vec_push(vec, 10);
-    vec_push(vec, 20);
-    ASSERT(vec_length(vec) == 2);
-    ASSERT(vec[0] == 10);
-    ASSERT(vec[1] == 20);
-    free(vec_meta(vec));
+    int* v = vec(int);
+    vec_push(v, 10);
+    vec_push(v, 20);
+    ASSERT(vec_length(v) == 2);
+    ASSERT(v[0] == 10);
+    ASSERT(v[1] == 20);
+    vec_destroy(v);
 }
 
 // Test for resizing when capacity is exceeded
 TEST(test_vector_resize) {
-    int* vec = vec(int);
+    int* v = vec(int);
     for (int i = 0; i < DEFAULT_CAPACITY + 1; i++) {
-        vec_push(vec, i);
+        vec_push(v, i);
     }
-    ASSERT(vec_capacity(vec) > DEFAULT_CAPACITY); // Ensure it resized
-    ASSERT(vec_length(vec) == DEFAULT_CAPACITY + 1);
-    free(vec_meta(vec));
+    ASSERT(vec_capacity(v) > DEFAULT_CAPACITY); // Ensure it resized
+    ASSERT(vec_length(v) == DEFAULT_CAPACITY + 1);
+    vec_destroy(v);
 }
 
 // Test for vector with custom types (e.g., struct)
@@ -54,15 +54,24 @@ typedef struct {
 } Point;
 
 TEST(test_vector_structs) {
-    Point* vec = vec(Point);
-    vec_push(vec, ((Point){.x = 1, .y = 2}));
-    vec_push(vec, ((Point){.x = 3, .y = 4}));
-    ASSERT(vec_length(vec) == 2);
-    ASSERT(vec[0].x == 1);
-    ASSERT(vec[0].y == 2);
-    ASSERT(vec[1].x == 3);
-    ASSERT(vec[1].y == 4);
-    free(vec_meta(vec));
+    Point** v = vec(Point*);
+
+    Point* p1 = (Point*)malloc(sizeof(Point));
+    p1->x = 1;
+    p1->y = 2;
+
+    Point* p2 = (Point*)malloc(sizeof(Point));
+    p2->x = 3;
+    p2->y = 4;
+
+    vec_push(v, p1);
+    vec_push(v, p2);
+    ASSERT(vec_length(v) == 2);
+    ASSERT(v[0]->x == 1);
+    ASSERT(v[0]->y == 2);
+    ASSERT(v[1]->x == 3);
+    ASSERT(v[1]->y == 4);
+    vec_destroyemall(v, Point*);
 }
 
 int main() {

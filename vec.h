@@ -31,6 +31,12 @@ void* vec_start(size_t item_size, size_t initial_capacity) {
 #define vec_length(v) (vec_meta(v)->length)
 #define vec_capacity(v) (vec_meta(v)->capacity)
 
+#define vec_destroyemall(v, T) \
+    for (size_t i = 0; i < vec_length(v); i++) { \
+        free((T)(v)[i]);               \
+    }                                      \
+    vec_destroy(v);                         
+
 void vec_destroy(void* v) {
     vec_metadata_t* meta = vec_meta(v);
     return free(meta);
