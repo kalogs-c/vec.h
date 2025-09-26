@@ -3,6 +3,8 @@ default: help
 # You can change these variables if you want to use a different compiler or debugger
 CC = clang
 
+all: test
+
 check: ## Check prerequisites
 	@which $(CC) > /dev/null && echo "SUCCESS: $(CC) is installed" || echo "ERROR: $(CC) not found, please install clang"
 
